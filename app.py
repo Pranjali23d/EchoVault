@@ -1,14 +1,73 @@
-import gradio as gr
+from flask import Flask, render_template, request
+from forgotten_projects import get_forgotten_projects
+from timeline import build_timeline
+from ai_summary import generate_summary
+from pdf_search import search_pdfs
+from search_engine import search_memory
+from github_search import search_github_repos
 
-def echo_search(query):
-    return f"EchoVault received: {query}"
+app = Flask(__name__)
 
-demo = gr.Interface(
-    fn=echo_search,
-    inputs="text",
-    outputs="text",
-    title="EchoVault 🚀",
-    description="AI Memory Search System"
-)
+search_history = []
 
-demo.launch()
+def simulate_answer(query, local_results, github_results, pdf_results):
+    sections = []
+
+    if local_results:
+        sections.append("📂 Local Projects:\n" + "\n".join(f"- {item}" for item in local_results))
+
+    if github_results:
+        sections.append("🐙 GitHub Repositories:\n" + "\n".join(f"- {item}" for item in github_results))
+
+    if pdf_results:
+        sections.append("📄 PDF Reports:\n" + "\n".join(f"- {item}" for item in pdf_results))
+
+    if not sections:
+        return "No related memory found for that query."
+
+    return "\n\n".join(sections)
+
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    answer = "Start searching..."
+    ai_summary = "EchoVault ready"
+
+    project_count = 0
+
+    try:
+        with open("data/projects.txt", "r", encoding="utf-8") as f:
+            project_count = sum(1 for _ in f)
+    except:
+        project_count = 0
+
+    timeline = build_timeline()
+    forgotten_projects = get_forgotten_projects()
+
+    if request.method == "POST":
+        query = request.form.get("query", "").strip()
+
+        if query:
+            search_history.append(query)
+
+            local_results = search_memory(query)
+            github_results = search_github_repos(query)
+            pdf_results = search_pdfs(query)
+
+            answer = simulate_answer(query, local_results, github_results, pdf_results)
+            ai_summary = generate_summary(query, answer)
+
+    return render_template(
+        "index.html",
+        answer=answer,
+        ai_summary=ai_summary,
+        project_count=project_count,
+        search_count=len(search_history),
+        history=list(reversed(search_history[-5:])),
+        timeline=timeline,
+        forgotten_projects=forgotten_projects,
+    )
+
+
+if __name__ == "__main__":
+    app.run()
