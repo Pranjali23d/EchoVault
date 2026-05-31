@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="page-shell">
+        <header class="hero-card">
+            <div class="hero-copy">
+                <p class="eyebrow">🧠 EchoVault</p>
+                <h1>Digital Memory Archaeologist</h1>
+                <p>Search past memories, review AI summaries, track recent searches, and rediscover forgotten projects in one sleek dashboard.</p>
+            </div>
+            <div class="hero-details">
+                <span class="status-chip">Live AI Memory Engine</span>
+                <p class="hero-note">Use natural language keywords to surface your stored data and insights.</p>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="card search-panel">
+                <span class="section-label">Search Memories</span>
+                <form method="POST" class="search-form">
+                    <input type="text" name="query" placeholder="Search your memories..." required>
+                    <button type="submit">Search</button>
+                </form>
+            </section>
+
+            <section class="card stats-grid">
+                <article class="stat-card">
+                    <span class="stat-label">Total Projects</span>
+                    <strong>{{ project_count }}</strong>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-label">Recent Searches</span>
+                    <strong>{{ search_count }}</strong>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-label">AI Engine</span>
+                    <strong>Active</strong>
+                </article>
+            </section>
+
+            <div class="grid-2">
+                <section class="card recent-panel">
+                    <span class="section-label">Recent Searches</span>
+                    {% if history %}
+                        <ul>
+                            {% for item in history %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="empty-state">No searches yet. Start with a keyword like "AI project".</p>
+                    {% endif %}
+                </section>
+
+                <section class="card timeline-panel">
+                    <span class="section-label">Memory Timeline</span>
+                    {% for year, items in timeline.items() %}
+                        <div class="timeline-year">
+                            <h3>{{ year }}</h3>
+                            <ul>
+                                {% for item in items %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </section>
+            </div>
+
+            <div class="grid-2">
+                <section class="card summary-panel">
+                    <span class="section-label">AI Summary</span>
+                    <p>{{ ai_summary }}</p>
+                </section>
+
+                <section class="card forgotten-panel">
+                    <span class="section-label">Forgotten Projects</span>
+                    <ul>
+                        {% for project in forgotten_projects %}
+                            <li>
+                                <span class="project-name">{{ project.name }}</span>
+                                <span class="project-meta">Last used {{ project.last_used }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+
+            <section class="card results-panel">
+                <span class="section-label">Results</span>
+                <pre>{{ answer }}</pre>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

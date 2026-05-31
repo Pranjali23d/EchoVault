@@ -1,0 +1,7 @@
+House Price Prediction using Machine Learning
+Titanic Survival Prediction
+AI Chatbot using Gemini API
+Portfolio Website
+KNN Classification on Iris Dataset
+Hierarchical Agglomerative Clustering
+VaaniSetu AI
