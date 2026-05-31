@@ -1,4 +1,6 @@
-Flask
+flask
 gunicorn
-requests
+faiss-cpu==1.14.2
 numpy
+pandas
+requests

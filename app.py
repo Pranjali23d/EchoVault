@@ -33,8 +33,9 @@ def simulate_answer(query, local_results, github_results, pdf_results):
 def home():
     answer = "Start a search to unlock your memory archive."
     ai_summary = "EchoVault is ready to summarize your stored memories."
-    with open("data/projects.txt", "r", encoding="utf-8") as project_file:
-        project_count = sum(1 for _ in project_file)
+    project_count = 0
+
+  
     timeline = build_timeline()
     forgotten_projects = get_forgotten_projects()
 
@@ -65,8 +66,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
-
+    app.run(host="0.0.0.0", port=7860)
